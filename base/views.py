@@ -44,12 +44,12 @@ class ResultsList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['results'] = context['results'].filter(user=self.request.user)
-        context['count'] = context['results'].filter(verdict=0).count()
+        context['count'] = context['results'].filter(verdict='Wrong').count()
 
 
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            context['results'] = context['results'].filter(title__icontains = search_input)
+            context['results'] = context['results'].filter(search_query__icontains = search_input)
 
         context['search_input'] = search_input
         return context

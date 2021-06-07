@@ -14,6 +14,7 @@ class Results(models.Model):
 
     
     class Meta:
-        ordering = ['verdict']
+        #Ordering first by wrong
+        ordering = ['-verdict']
 
 

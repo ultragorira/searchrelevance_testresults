@@ -2,15 +2,15 @@
 {% block content %}
 
 <div class="header-bar">
-    <h1>Sign up</h1>
+    <h1>SR - Training Portal - Sign up</h1>
 </div>
 
 <div class="card-body">
 <form method="POST">
     {%csrf_token%}
-    <label>{{form.username.label}}</label>
+    <label>E-mail Address</label>
     {{form.username}}
-
+    <p>Make sure to register with the same e-mail address used in Lionbridge.ai platform
     <label>{{form.email.label}}</label>
     {{form.email}}
 
@@ -21,7 +21,7 @@
     {{form.password2}}
     <input style="margin-top:10px;" class="button" type="submit" value="Sign up" />
 </form>
-<p>Already have an account? <a href="{% url 'login'%}">Login</a>
+<p>Already have an account? <a href="{% url 'login'%}">Login</a></p>
 </div>
 
 

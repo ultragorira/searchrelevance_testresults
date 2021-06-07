@@ -4,7 +4,7 @@
 <div class="header-bar">
     <div>
         <h1> Hello {{request.user|title}}</h1>
-        <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }} </h3>
+        <h3 style="margin:0">You have <i>{{count}}</i> item{{ count|pluralize:"s" }} to verify </h3>
     </div>
     {% if request.user.is_authenticated %}
         <a href="{% url 'logout' %}">Logout</a>
@@ -23,27 +23,44 @@
 
 
 <div class="task-items-wrapper">
+    <table width="100%">
+    <th>Status</th>
+    <th>Search Query</th>
+    <th>Link</th>
+    <th>Your Answer</th>
+    <th>Correct Answer</th>
+    <th>Flag</th>
     {% for result in results %}
-        <div class="task-wrapper">
-            {% if result.verdict %}
-                <div class="task-title">
-                    <div class="task-complete-icon"></div>
-                    <i><s><a href="">{{result.link_query}}</a></s></i>
-                </div>
-                <a class = "delete-link" href="">&#215;</a>
-            {% else %}
-                <div class="task-title">
-                        <div class="task-incomplete-icon"></div>
-                        <a href="">{{result}}</a>
-                </div>
-                <a class = "delete-link" href="">&#215;</a>
-            {% endif %}
-            
-        </div>
+            <tr>
+                {% if result.verdict == 'Wrong' %}
+                    <td align="center">
+                        <div class="incorrect-result-icon"></div>
+                    </td>
+                {% else %}
+                    <td align="center">
+                        <div class="correct-result-icon"></div>
+                    </td>
+                {% endif %}
+                <td align="center">
+                {{result.search_query}}
+                </td>
+                <td align="center">
+                <a href="{{result.link_query}}">Link</a>
+                </td>
+                <td align="center">
+                {{result.user_answer}}
+                </td>
+                <td align="center">
+                {{result.correct_answer}}
+                </td>
+                <td align="center">
+                {{result.verdict}}
+                </td>
+            </tr>
     {% empty %}
         <h3> No items available </h3>
     {% endfor %}
-
+    </table>
 </div>
 
 {% endblock content %}
