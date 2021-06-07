@@ -17,6 +17,3 @@ class Results(models.Model):
         ordering = ['verdict']
 
 
-
-
-# Create your models here.
