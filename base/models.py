@@ -9,6 +9,12 @@ class Results(models.Model):
     correct_answer = models.CharField(max_length=50)
     verdict = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.search_query
+
+    
+    class Meta:
+        ordering = ['verdict']
 
 
 
