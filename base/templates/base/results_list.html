@@ -3,14 +3,8 @@
 
 <div class="header-bar">
     <div>
-        <h1> Hello {{request.user|title}}</h1>
         <h3 style="margin:0">You have <i>{{count}}</i> item{{ count|pluralize:"s" }} to verify </h3>
     </div>
-    {% if request.user.is_authenticated %}
-        <a href="{% url 'logout' %}">Logout</a>
-    {% else %}
-        <a href="{% url 'login'%}">Login</a>
-    {% endif %}
 </div>
 
 <div id="search-add-wrapper">
@@ -24,36 +18,36 @@
 
 <div class="task-items-wrapper">
     <table width="100%">
-    <th>Status</th>
-    <th>Search Query</th>
-    <th>Link</th>
-    <th>Your Answer</th>
-    <th>Correct Answer</th>
-    <th>Result</th>
+    <th class="text-center">Status</th>
+    <th class="text-center">Search Query</th>
+    <th class="text-center">Link</th>
+    <th class="text-center">Your Answer</th>
+    <th class="text-center">Correct Answer</th>
+    <th class="text-center">Result</th>
     {% for result in results %}
-            <tr class="{% cycle 'gray' 'white' %}">
+            <tr>
                 {% if result.verdict == 'Wrong' %}
-                    <td align="center">
+                    <td width="10%" align="center">
                         <div class="incorrect-result-icon"></div>
                     </td>
                 {% else %}
-                    <td align="center">
+                    <td width="10%" align="center">
                         <div class="correct-result-icon"></div>
                     </td>
                 {% endif %}
-                <td align="center">
+                <td width="30%" align="center">
                 {{result.search_query}}
                 </td>
-                <td align="center">
+                <td width="10%" align="center">
                 <a href="{{result.link_query}}">Link</a>
                 </td>
-                <td align="center">
+                <td width="15%" align="center">
                 {{result.user_answer}}
                 </td>
-                <td align="center">
+                <td width="15%" align="center">
                 {{result.correct_answer}}
                 </td>
-                <td align="center">
+                <td width="15%" align="center">
                 {{result.verdict}}
                 </td>
             </tr>

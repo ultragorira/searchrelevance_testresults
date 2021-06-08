@@ -5,18 +5,32 @@ from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login, logout
+
+from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import Results
 
 
-class CustomLoginView(LoginView):
-    template_name = 'base/login.html'
-    fields = '__all__'
-    redirect_authenticated_user = True
 
-    def get_success_url(self):
-        return reverse_lazy('results')
+def loginPage(request):
+	if request.user.is_authenticated:
+		return redirect('results')
+	else:
+		if request.method == 'POST':
+			username = request.POST.get('username')
+			password =request.POST.get('password')
+
+			user = authenticate(request, username=username, password=password)
+
+			if user is not None:
+				login(request, user)
+				return redirect('results')
+			else:
+				messages.info(request, 'Username OR password is incorrect')
+
+		context = {}
+		return render(request, 'base/login.html', context)
 
 
 class SignupPage(FormView):

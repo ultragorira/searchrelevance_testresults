@@ -5,20 +5,17 @@
     <h1>SR - Training Portal - Sign up</h1>
 </div>
 
-<div class="card-body">
+<div class="card-body" align="center">
 <form method="POST">
     {%csrf_token%}
     <label>E-mail Address</label>
     {{form.username}}
     <p>Make sure to register with the same e-mail address used in Lionbridge.ai platform
     <label>{{form.email.label}}</label>
-    {{form.email}}
-
     <label>{{form.password1.label}}</label>
     {{form.password1}}
-
     <label>{{form.password2.label}}</label>
-    {{form.password2}}
+    {{form.password2}}<br>
     <input style="margin-top:10px;" class="button" type="submit" value="Sign up" />
 </form>
 <p>Already have an account? <a href="{% url 'login'%}">Login</a></p>
