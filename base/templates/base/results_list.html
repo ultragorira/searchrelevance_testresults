@@ -29,9 +29,9 @@
     <th>Link</th>
     <th>Your Answer</th>
     <th>Correct Answer</th>
-    <th>Flag</th>
+    <th>Result</th>
     {% for result in results %}
-            <tr>
+            <tr class="{% cycle 'gray' 'white' %}">
                 {% if result.verdict == 'Wrong' %}
                     <td align="center">
                         <div class="incorrect-result-icon"></div>
