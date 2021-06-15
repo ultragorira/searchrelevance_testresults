@@ -127,26 +127,3 @@ def csv_upload_view(request):
             return JsonResponse({'ex': True})
 
     return HttpResponse()
-
-class UploadTemplateView_Users(LoginRequiredMixin, TemplateView):
-    template_name = 'base/upload_new_users.html'
-
-@login_required
-def csv_upload_users(request):
-
-    if request.method == 'POST':
-        csv_file_name = request.FILES.get('file').name
-        csv_file = request.FILES.get('file')
-        obj, created = CSV.objects.get_or_create(file_name=csv_file_name)
-
-        if created:
-            obj.csv_file = csv_file
-            obj.save()
-            with open(obj.csv_file.path, 'r') as f:
-                reader = csv.reader(f)
-                reader.__next__()
-                
-        else:
-            return JsonResponse({'ex': True})
-
-    return HttpResponse()
