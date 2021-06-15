@@ -64,7 +64,8 @@ class ResultsList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['results'] = context['results'].filter(user=self.request.user)
+        #Filtering data by getting all results with account = to user logged in
+        context['results'] = context['results'].filter(account=self.request.user)
         context['count'] = context['results'].filter(verdict='Wrong').count()
 
 
@@ -102,7 +103,7 @@ def csv_upload_view(request):
                     correct_answer = row[8]
                     verdict = 'Wrong' if row[9] == '0' else 'Correct'
 
-                    result_obj,_ = Results.objects.get_or_create(search_query= search_query, link_query= link_query,
+                    result_obj,_ = Results.objects.get_or_create(account=contributor_id, search_query= search_query, link_query= link_query,
                         user_answer=user_answer, correct_answer=correct_answer, verdict=verdict) 
                         
                     result_obj.save()
