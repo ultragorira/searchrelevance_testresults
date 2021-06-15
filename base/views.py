@@ -10,10 +10,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 
 from django.contrib import messages
 from django.urls import reverse_lazy
-from .models import Results, CSV
+from .models import Results, CSV, User
 from django.http import HttpResponse
 from django.utils.dateparse import parse_date
 
@@ -94,19 +95,57 @@ def csv_upload_view(request):
             with open(obj.csv_file.path, 'r') as f:
                 reader = csv.reader(f)
                 reader.__next__()
-                for row in reader:
+                if csv_file_name.startswith('user'):
+                    for row in reader:
         
-                    contributor_id = row[0]
-                    search_query = row[5]
-                    link_query = row[6]
-                    user_answer = row[7]
-                    correct_answer = row[8]
-                    verdict = 'Wrong' if row[9] == '0' else 'Correct'
+                        account = row[0]
+                        password = row[1]
 
-                    result_obj,_ = Results.objects.get_or_create(account=contributor_id, search_query= search_query, link_query= link_query,
-                        user_answer=user_answer, correct_answer=correct_answer, verdict=verdict) 
+                        user_obj,_ = User.objects.get_or_create(
+                            username=account,
+                            email='',
+                            password=make_password(password), #to encrypt password
+                            is_active=True,
+                        )
                         
-                    result_obj.save()
+                        user_obj.save()
+                else:
+                    for row in reader:
+            
+                        contributor_id = row[0]
+                        search_query = row[5]
+                        link_query = row[6]
+                        user_answer = row[7]
+                        correct_answer = row[8]
+                        verdict = 'Wrong' if row[9] == '0' else 'Correct'
+
+                        result_obj,_ = Results.objects.get_or_create(account=contributor_id, search_query= search_query, link_query= link_query,
+                            user_answer=user_answer, correct_answer=correct_answer, verdict=verdict) 
+                            
+                        result_obj.save()
+        else:
+            return JsonResponse({'ex': True})
+
+    return HttpResponse()
+
+class UploadTemplateView_Users(LoginRequiredMixin, TemplateView):
+    template_name = 'base/upload_new_users.html'
+
+@login_required
+def csv_upload_users(request):
+
+    if request.method == 'POST':
+        csv_file_name = request.FILES.get('file').name
+        csv_file = request.FILES.get('file')
+        obj, created = CSV.objects.get_or_create(file_name=csv_file_name)
+
+        if created:
+            obj.csv_file = csv_file
+            obj.save()
+            with open(obj.csv_file.path, 'r') as f:
+                reader = csv.reader(f)
+                reader.__next__()
+                
         else:
             return JsonResponse({'ex': True})
 
