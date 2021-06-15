@@ -80,7 +80,7 @@ class UploadTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'base/upload_objects.html'
 
 @login_required
-def csv_upload_view( request):
+def csv_upload_view(request):
 
     if request.method == 'POST':
         csv_file_name = request.FILES.get('file').name
@@ -94,29 +94,18 @@ def csv_upload_view( request):
                 reader = csv.reader(f)
                 reader.__next__()
                 for row in reader:
-                    data = "".join(row)
-                    data = data.split(';')
-                    data.pop()
         
-                    contributor_id = data[0]
-                    search_query = data[5]
-                    link_query = data[6]
-                    user_answer = data[7]
-                    correct_answer = data[8]
-                    verdict = data[9]
+                    contributor_id = row[0]
+                    search_query = row[5]
+                    link_query = row[6]
+                    user_answer = row[7]
+                    correct_answer = row[8]
+                    verdict = 'Wrong' if row[9] == '0' else 'Correct'
 
-                    try:
-                        result_obj = Results.objects.get(name__iexact=search_query)
-                    except Results.DoesNotExist:
-                        result_obj = None
-
-                    if result_obj is not None:
-                        result_obj = Results.objects.get_or_create(contributor_id= contributor_id, search_query= search_query, link_query= link_query,
+                    result_obj,_ = Results.objects.get_or_create(search_query= search_query, link_query= link_query,
                         user_answer=user_answer, correct_answer=correct_answer, verdict=verdict) 
                         
-                        result_obj.add(result_obj)
-                        result_obj.save()
-                return JsonResponse({'ex': False})
+                    result_obj.save()
         else:
             return JsonResponse({'ex': True})
 

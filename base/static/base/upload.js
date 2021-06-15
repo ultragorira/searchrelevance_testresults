@@ -11,7 +11,7 @@ const handleAlerts = (type, msg) => {
 
 Dropzone.autoDiscover = false
 const myDropzone = new Dropzone('#my-dropozne', {
-    url: '/base/upload_new_results/',
+    url: '/upload/',
     init: function() {
         this.on('sending', function(file, xhr, formData){
             console.log('sending')
