@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 
+
 from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import Results, CSV, User
@@ -127,3 +128,9 @@ def csv_upload_view(request):
             return JsonResponse({'ex': True})
 
     return HttpResponse()
+
+
+def guidelines(request):
+    if request.user.is_authenticated:
+        return render(request, 'base/guidelines.html')
+

@@ -11,5 +11,6 @@ urlpatterns = [
     path('', ResultsList.as_view(), name='results'),
     path('upload/', csv_upload_view, name='upload'),
     path('upload_new_results/', UploadTemplateView.as_view(), name='upload_objects'),
+    path('guidelines/', views.guidelines, name='guidelines'),
 ]
 
