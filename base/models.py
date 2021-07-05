@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Results(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    id_result = models.AutoField(primary_key=True)
     account = models.CharField(max_length=50)
     search_query =  models.CharField(max_length=200)
     link_query = models.URLField(max_length=400)

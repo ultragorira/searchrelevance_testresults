@@ -22,6 +22,7 @@ from django.utils.dateparse import parse_date
 import csv
 
 
+
 def loginPage(request):
 	if request.user.is_authenticated:
 		return redirect('results')
@@ -73,7 +74,7 @@ class ResultsList(LoginRequiredMixin, ListView):
 
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            context['results'] = context['results'].filter(search_query__icontains = search_input)
+            context['results'] = context['results'].filter(verdict__icontains = search_input)
 
         context['search_input'] = search_input
         return context
@@ -96,11 +97,12 @@ def csv_upload_view(request):
             with open(obj.csv_file.path, 'r') as f:
                 reader = csv.reader(f)
                 reader.__next__()
-                if csv_file_name.startswith('user'):
+                if csv_file_name.startswith('Users'):
                     for row in reader:
         
                         account = row[0]
-                        password = row[1]
+                        #Reading the same UUID from CSV. First 10 chars will be the PW
+                        password = row[0][0:10]
 
                         user_obj,_ = User.objects.get_or_create(
                             username=account,
@@ -112,18 +114,18 @@ def csv_upload_view(request):
                         user_obj.save()
                 else:
                     for row in reader:
-            
-                        contributor_id = row[0]
-                        search_query = row[5]
-                        link_query = row[6]
-                        user_answer = row[7]
-                        correct_answer = row[8]
-                        verdict = 'Wrong' if row[9] == '0' else 'Correct'
+                        
+                        contributor_id = row[1]
+                        search_query = row[4]
+                        link_query = row[5]
+                        user_answer = row[6]
+                        correct_answer = row[7]
+                        verdict = row[8]
 
                         result_obj,_ = Results.objects.get_or_create(account=contributor_id, search_query= search_query, link_query= link_query,
                             user_answer=user_answer, correct_answer=correct_answer, verdict=verdict) 
                             
-                        result_obj.save()
+                        #result_obj.save()
         else:
             return JsonResponse({'ex': True})
 
