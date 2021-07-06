@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -70,6 +70,7 @@ class ResultsList(LoginRequiredMixin, ListView):
         #Filtering data by getting all results with account = to user logged in
         context['results'] = context['results'].filter(account=self.request.user)
         context['count'] = context['results'].filter(verdict='Wrong').count()
+        context['total_asin'] = context['results'].count()
 
 
         search_input = self.request.GET.get('search-area') or ''
@@ -79,9 +80,15 @@ class ResultsList(LoginRequiredMixin, ListView):
         context['search_input'] = search_input
         return context
 
+#Class to handle access to superuser only
+class SuperUserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class UploadTemplateView(LoginRequiredMixin, TemplateView):
+class UploadTemplateView(SuperUserRequiredMixin, TemplateView):
     template_name = 'base/upload_objects.html'
+
+    
 
 @login_required
 def csv_upload_view(request):

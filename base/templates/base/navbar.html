@@ -17,9 +17,11 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'guidelines' %}">Guidelines</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'upload_objects' %}">Upload Results</a>
-      </li>
+      {% if request.user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'upload_objects' %}">Upload Results</a>
+        </li>
+      {% endif %}
     </ul>
   </div>
   
